@@ -4,8 +4,8 @@ import requests
 
 app = Flask(__name__)
 
-BOT_TOKEN = os.environ['BOT_TOKEN']
-CHAT_ID = os.environ['CHAT_ID']
+BOT_TOKEN = os.environ.get('BOT_TOKEN')
+CHAT_ID = os.environ.get('CHAT_ID')
 
 def send_message(text):
     url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
@@ -28,3 +28,6 @@ def webhook():
         send_message(f"⚠️ Незрозумілий сигнал: {signal} для {pair}")
 
     return '', 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=10000)
