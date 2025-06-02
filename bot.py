@@ -1,24 +1,30 @@
 from flask import Flask, request
-import requests
 import os
+import requests
 
 app = Flask(__name__)
 
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
-CHAT_ID = os.environ.get("CHAT_ID")
+BOT_TOKEN = os.environ['BOT_TOKEN']
+CHAT_ID = os.environ['CHAT_ID']
 
-@app.route('/webhook', methods=['POST'])
+def send_message(text):
+    url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
+    payload = {'chat_id': CHAT_ID, 'text': text}
+    requests.post(url, data=payload)
+
+@app.route('/', methods=['POST'])
 def webhook():
     data = request.json
-    message = data.get("message", "⚠️ Сигнал без тексту")
-    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-    payload = {
-        "chat_id": CHAT_ID,
-        "text": message
-    }
-    requests.post(url, json=payload)
-    return '', 200
+    signal = data.get('signal', '').upper()
+    pair = data.get('pair', 'N/A')
+    price = data.get('price', 'N/A')
+    indicator = data.get('indicator', 'N/A')
 
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    if signal == "BUY":
+        send_message(f"📈 Сигнал BUY\n🔹 Пара: {pair}\n💵 Ціна: {price}\n📊 Індикатори: {indicator}")
+    elif signal == "SELL":
+        send_message(f"📉 Сигнал SELL\n🔹 Пара: {pair}\n💵 Ціна: {price}\n📊 Індикатори: {indicator}")
+    else:
+        send_message(f"⚠️ Незрозумілий сигнал: {signal} для {pair}")
+
+    return '', 200
