@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: tradingview-telegram-bot
+    env: python
+    buildCommand: ""
+    startCommand: "python bot.py"
+    envVars:
+      - key: TELEGRAM_TOKEN
+        value: 8008098561:AAGqPJI7GcHX9sXA0y_adzKKnffrxgXa8EI
+      - key: CHAT_ID
+        value: 564715453
