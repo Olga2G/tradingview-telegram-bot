@@ -11,6 +11,9 @@ def send_message(text):
     url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
     payload = {'chat_id': CHAT_ID, 'text': text}
     requests.post(url, data=payload)
+@app.route('/', methods=['GET'])
+def index():
+    return 'Bot is running', 200
 
 @app.route('/', methods=['POST'])
 def webhook():
